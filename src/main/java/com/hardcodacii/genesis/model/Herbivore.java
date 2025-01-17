@@ -1,12 +1,16 @@
 package com.hardcodacii.genesis.model;
 
+import com.hardcodacii.genesis.service.GeneticCode;
+
+import java.util.Optional;
+
 /**
  * @author Dumitru Săndulache (sandulachedumitru@hotmail.com)
  */
 
 public class Herbivore extends Organism {
-    public Herbivore(int x, int y, int energy) {
-        super(x, y, energy);
+    public Herbivore(int x, int y, int energy, GeneticCode geneticCode) {
+        super(x, y, energy, geneticCode);
     }
 
     @Override
@@ -21,16 +25,14 @@ public class Herbivore extends Organism {
         brain.setInputs(perception);
         double[] decisions = brain.getOutputs();
 
-        // Example decision: move based on neural output
         x += (int) Math.round(decisions[0]);
         y += (int) Math.round(decisions[1]);
 
-        // Ensure the herbivore stays within bounds
         x = Math.max(0, Math.min(universe.getWidth() - 1, x));
         y = Math.max(0, Math.min(universe.getHeight() - 1, y));
 
         if (energy > 15) {
-            reproduce(universe);
+            searchMateAndReproduce(universe);
         }
 
         System.out.println("Herbivore at (" + x + ", " + y + ") with energy: " + energy);
@@ -52,10 +54,21 @@ public class Herbivore extends Organism {
         return new double[]{visualInput, auditoryInput, tactileInput, energy / 20.0};
     }
 
-    private void reproduce(Universe universe) {
-        System.out.println("Herbivore reproduces at (" + x + ", " + y + ")");
-        Herbivore offspring = new Herbivore(x, y, 10);
-        universe.addEntity(offspring);
-        energy -= 5; // Reduce energy after reproduction
+    private void searchMateAndReproduce(Universe universe) {
+        Optional<Entity> potentialMate = universe.getEntities().stream()
+                .filter(e -> e instanceof Herbivore && e != this)
+                .findFirst();
+
+        if (potentialMate.isPresent()) {
+            Herbivore mate = (Herbivore) potentialMate.get();
+            if (Math.abs(mate.getX() - this.x) <= 1 && Math.abs(mate.getY() - this.y) <= 1) {
+                System.out.println("Herbivore reproduces with a mate at (" + x + ", " + y + ")");
+                GeneticCode offspringGenetics = geneticCode.combine(mate.geneticCode);
+                Herbivore offspring = new Herbivore(x, y, 10, offspringGenetics);
+                universe.addEntity(offspring);
+                this.energy -= 5;
+                mate.energy -= 5;
+            }
+        }
     }
 }

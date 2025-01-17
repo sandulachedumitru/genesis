@@ -1,12 +1,14 @@
 package com.hardcodacii.genesis.model;
 
+import com.hardcodacii.genesis.service.GeneticCode;
+
 /**
  * @author Dumitru Săndulache (sandulachedumitru@hotmail.com)
  */
 
 public class Carnivore extends Organism {
-    public Carnivore(int x, int y, int energy) {
-        super(x, y, energy);
+    public Carnivore(int x, int y, int energy, GeneticCode geneticCode) {
+        super(x, y, energy, geneticCode);
     }
 
     @Override

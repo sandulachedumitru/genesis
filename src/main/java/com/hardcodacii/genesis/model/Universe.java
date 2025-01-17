@@ -1,6 +1,7 @@
 package com.hardcodacii.genesis.model;
 
 
+import com.hardcodacii.genesis.service.GeneticCode;
 import com.hardcodacii.genesis.service.Law;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,8 @@ public class Universe {
         this.laws = new ArrayList<>();
 
         // Add entities
-        entities.add(new Herbivore(5, 5, 10));
-        entities.add(new Carnivore(2, 2, 15));
+        entities.add(new Herbivore(5, 5, 10, new GeneticCode()));
+        entities.add(new Carnivore(2, 2, 15, new GeneticCode()));
         entities.add(new Vegetation(7, 7));
         entities.add(new Vegetation(3, 3));
 
@@ -43,5 +44,9 @@ public class Universe {
         for (Entity entity : entities) {
             entity.act(this);
         }
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
     }
 }

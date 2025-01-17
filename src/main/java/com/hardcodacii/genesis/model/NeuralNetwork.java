@@ -2,6 +2,7 @@ package com.hardcodacii.genesis.model;
 
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -15,18 +16,11 @@ public class NeuralNetwork {
     @Getter
     private NeuronDevelopmentStage stage;
 
-    public NeuralNetwork() {
+    public NeuralNetwork(double[] initialWeights) {
         this.inputs = new double[5]; // Updated for detailed senses
-        this.weights = new double[5]; // Weights for decision-making
+        this.weights = Arrays.copyOf(initialWeights, initialWeights.length);
         this.random = new Random();
         this.stage = NeuronDevelopmentStage.PROLIFERATION;
-        initializeWeights();
-    }
-
-    private void initializeWeights() {
-        for (int i = 0; i < weights.length; i++) {
-            weights[i] = random.nextDouble(); // Random initial weights
-        }
     }
 
     public void setInputs(double[] inputs) {
